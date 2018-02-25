@@ -1,0 +1,27 @@
+{
+    "name": "marklinsim",
+    "version": "0.1.0",
+    "description": "Märklin train set simulation",
+    "main": "./dist/main.js",
+    "private": true,
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "compile-main": "tsc",
+        "copy-resources": "copyfiles --up 1 src/**/*.html dist/"
+    },
+    "author": "Martin Chloride",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^9.4.6",
+        "@types/pixi.js": "^4.7.1",
+        "@types/bezier-js": "^0.0.7",
+        "copyfiles": "^1.2.0",
+        "electron": "~1.8.2",
+        "typescript": "^2.7.2",
+        "tslint": "^5.9.1"
+    },
+    "dependencies": {
+        "pixi.js": "^4.7.0",
+        "bezier-js": "^2.2.5"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "defaultSeverity": "warning",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "semicolon": true,
+        "quotemark": false,
+        "trailing-comma": false,
+        "ordered-imports": false,
+        "object-literal-sort-keys": false,
+        "no-console": {
+            "severity": "warning"
+        },
+        "arrow-parens": false,
+        "no-bitwise": false,
+        "no-empty": false,
+        "prefer-const": {
+            "severity": "warning"
+        },
+        "object-literal-shorthand": false,
+        "member-ordering": false
+    },
+    "rulesDirectory": []
+}
