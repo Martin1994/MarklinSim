@@ -50,7 +50,7 @@ export class BezierTrack extends Track {
                 lowerBound = t;
                 lowerBoundDistance = tDistance;
             }
-        } while (Math.abs(tDistance - distance) / distance < tolerance);
+        } while (Math.abs(tDistance - distance) / distance > tolerance);
 
         return t;
     }
