@@ -1,7 +1,7 @@
 import { Train } from '../model/train';
 import { MarklinIO } from './marklin_io';
 import * as config from '../config';
-import { ITickPayload } from '../util/tick_payload';
+import { ITickPayload, ITrackPortion } from '../util/tick_payload';
 import { Track } from '../model/track';
 import { StraightTrack } from '../model/straight_track';
 import { BezierTrack } from '../model/bezier_track';
@@ -10,6 +10,7 @@ import { SwitchDirection, Switch } from '../model/switch';
 export class MarklinController {
     private readonly trains: Map<number, Train> = new Map<number, Train>();
     private readonly tracks: Map<number, Track> = new Map<number, Track>();
+    private readonly switches: Map<number, Switch> = new Map<number, Switch>();
     private io: MarklinIO = null;
     private readonly launchTime: number = new Date().getTime();
 
@@ -29,6 +30,9 @@ export class MarklinController {
             console.warn(`Adding duplicate track: ${track.id}`);
         }
         this.tracks.set(track.id, track);
+        if (track instanceof Switch) {
+            this.switches.set(track.id, track);
+        }
     }
 
     public setTrainSpeed(id: number, speed: number, light: boolean) {
@@ -54,15 +58,11 @@ export class MarklinController {
     }
 
     public changeSwitchDirection(id: number, direction: SwitchDirection) {
-        if (!this.tracks.has(id)) {
+        if (!this.switches.has(id)) {
             console.warn(`Setting train speed for train out of track: ${id}.`);
             return;
         }
-        const swytch = this.tracks.get(id) as Switch;
-        if (!swytch) {
-            console.warn(`Setting train speed for train out of track: ${id}.`);
-            return;
-        }
+        const swytch = this.switches.get(id);
         swytch.changeDirection(direction);
     }
 
@@ -83,7 +83,11 @@ export class MarklinController {
             objectChanged: !delta,
             drawTrack: !delta,
             straightTracks: delta ? null : [],
-            bezierTracks: delta ? null : []
+            bezierTracks: delta ? null : [],
+            onlineSwitchStraightTracks: [],
+            offlineSwitchStraightTracks: [],
+            onlineSwitchBezierTracks: [],
+            offlineSwitchBezierTracks: []
         };
 
         // Put train info
@@ -103,6 +107,37 @@ export class MarklinController {
                 } else if (track instanceof BezierTrack) {
                     payload.bezierTracks.push(track.getControlPoints());
                 }
+            }
+        }
+
+        // Put Switch info
+        for (const track of this.switches.values()) {
+            if (!delta || track.directionDirty) {
+                let tracks: ITrackPortion[];
+
+                const online = track.getOnlineTrack();
+                if (online.track instanceof StraightTrack) {
+                    tracks = payload.onlineSwitchStraightTracks;
+                } else if (online.track instanceof BezierTrack) {
+                    tracks = payload.onlineSwitchBezierTracks;
+                }
+                tracks.push({
+                    track: online.track.getControlPoints(),
+                    head: online.head
+                });
+
+                const offline = track.getOfflineTrack();
+                if (offline.track instanceof StraightTrack) {
+                    tracks = payload.offlineSwitchStraightTracks;
+                } else if (offline.track instanceof BezierTrack) {
+                    tracks = payload.offlineSwitchBezierTracks;
+                }
+                tracks.push({
+                    track: offline.track.getControlPoints(),
+                    head: offline.head
+                });
+
+                track.directionDirty = false;
             }
         }
 

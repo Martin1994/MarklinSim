@@ -1,4 +1,5 @@
 import { MarklinController } from './marklin_controller';
+import { SwitchDirection } from '../model/switch';
 
 export class MarklinDecoder {
     private codeBuffer: number = -1;
@@ -34,6 +35,10 @@ export class MarklinDecoder {
     }
 
     private decodeSwitchCommand(controller: MarklinController, code1: number, code2: number): void {
-
+        if (code1 == 33) {
+            controller.changeSwitchDirection(code2, SwitchDirection.Straight);
+        } else {
+            controller.changeSwitchDirection(code2, SwitchDirection.Curve);
+        }
     }
 }

@@ -15,6 +15,8 @@ export class Switch extends Track {
     private direction: SwitchDirection = SwitchDirection.Straight;
     private offlineTrack: ITrackConnection = null;
 
+    public directionDirty: boolean = true;
+
     public constructor(id: number, position: IPoint2D) {
         super(id, position, position, 0);
     }
@@ -30,6 +32,7 @@ export class Switch extends Track {
             this.offlineTrack = this.nextTrack;
             this.nextTrack = trackTemp;
             this.direction = direction;
+            this.directionDirty = true;
         }
     }
 
@@ -58,6 +61,20 @@ export class Switch extends Track {
 
     public getControlPoints(): IPoint2D[] {
         throw new Error('Invalid operation.');
+    }
+
+    public getOnlineTrack(): ITrackConnection {
+        return {
+            track: this.nextTrack.track,
+            head: this.nextTrack.head
+        };
+    }
+
+    public getOfflineTrack(): ITrackConnection {
+        return {
+            track: this.offlineTrack.track,
+            head: this.offlineTrack.head
+        };
     }
 
     /**

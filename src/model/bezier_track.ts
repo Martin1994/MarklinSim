@@ -84,6 +84,7 @@ export class BezierTrack extends Track {
         // By the intermediate value theorem, the solution lays on this bezier curve.
         // Binary search
         const tolerance = 1e-6 * spacing;
+        const tTolerance = 1e-6;
         let upper: number;
         let lower: number;
         let testDistance: number;
@@ -113,7 +114,7 @@ export class BezierTrack extends Track {
                 }
             }
 
-            if (1 - t < tolerance) {
+            if (1 - t < tTolerance) {
                 if (this.nextTrack.track === from) {
                     return null;
                 } else {
@@ -122,9 +123,7 @@ export class BezierTrack extends Track {
                     return trackInfo.track.movePassive(startPosition, activePosition, spacing, this);
                 }
             }
-        } while (Math.abs(testDistance - spacing) / spacing > tolerance);
-
-        console.log(t);
+        } while (Math.abs(testDistance - spacing) > tolerance);
 
         return {
             track: this,

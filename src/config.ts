@@ -12,6 +12,7 @@ export const TRAIN_WHEEL_OFFSET: number = 25;
 export const TRAIN_LIGHT_WIDTH: number = 10;
 
 export const TRACK_WIDTH: number = 14;
+export const TURNOUT_PORTION: number = 0.5;
 
 export const MONOSPACE_FONTS: string[] = [
     'Consolas',

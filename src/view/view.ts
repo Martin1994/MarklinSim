@@ -44,7 +44,14 @@ export class View {
         }
 
         if (payload.drawTrack) {
-            this.trackView.draw(payload.straightTracks, payload.bezierTracks);
+            this.trackView.renderTracks(payload.straightTracks, payload.bezierTracks);
         }
+
+        this.trackView.renderSwitchTracks(
+            payload.onlineSwitchStraightTracks,
+            payload.onlineSwitchBezierTracks,
+            payload.offlineSwitchStraightTracks,
+            payload.offlineSwitchBezierTracks
+        );
     }
 }
