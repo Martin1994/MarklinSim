@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { ITrain } from '../../model/train';
+import * as config from '../../config';
 
 export class TrainView {
     private readonly id: number;
@@ -30,7 +31,7 @@ export class TrainView {
         // Add train number
         const style = new PIXI.TextStyle({
             align: 'center',
-            fontFamily: 'monospace',
+            fontFamily: config.MONOSPACE_FONTS,
             fontSize: 16,
             fill: 0x333333
         });

@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import * as config from '../../config';
 
 export class Dashboard {
     private readonly sprite: PIXI.Container;
@@ -14,7 +15,7 @@ export class Dashboard {
 
         const style = new PIXI.TextStyle({
             align: 'left',
-            fontFamily: 'Monospace',
+            fontFamily: config.MONOSPACE_FONTS,
             fontSize: 16,
             fill: 0x333333
         });
