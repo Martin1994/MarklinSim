@@ -2,6 +2,11 @@ import * as config from '../config';
 import { Track } from './track';
 import { IPoint2D } from '../util/point2d';
 
+/**
+ * The train model. It can move, accelerate, and turns on and off its light.
+ *
+ * It has one active wheel and one passive wheel. See move method for detail.
+ */
 export class Train {
     public readonly id: number;
     public targetSpeed: number = 0;
@@ -33,6 +38,13 @@ export class Train {
         this.id = id;
     }
 
+    /**
+     * Put this train on a track. The active wheel will be on the centre of the track.
+     * Make sure the track is long enough to put the back wheel.
+     *
+     * @param track The track to put on.
+     * @param forward Whether facing forward.
+     */
     public putOnTrack(track: Track, forward: boolean) {
         this.frontWheel.track = track;
         this.frontWheel.distance = track.getLength() / 2;
@@ -44,6 +56,11 @@ export class Train {
         this.backWheel.globalPosition = track.getGlobalPosition(this.backWheel.distance);
     }
 
+    /**
+     * Accelerate the train.
+     *
+     * @param interval The time interval.
+     */
     public accelerate(interval: number) {
         if (this.targetSpeed !== this.currentSpeed) {
             this.nextAccelerate -= interval;
@@ -62,6 +79,12 @@ export class Train {
         }
     }
 
+    /**
+     * Move the train along the track. The active wheel will move excately at the train's speed, while
+     * the passive wheel will keep be dragged by the active wheel.
+     *
+     * @param interval The time interval.
+     */
     public move(interval: number) {
         if (this.currentSpeed !== 0) {
             const displacement = this.currentSpeed * this.speedMultiplier * interval / 1000;
@@ -77,10 +100,6 @@ export class Train {
 
             const passiveTarget = passiveWheel.track.movePassive(
                 passiveWheel.distance, wheel.globalPosition, this.length - 2 * this.wheelOffset);
-            if (!passiveTarget) {
-                passiveWheel.track.movePassive(
-                    passiveWheel.distance, wheel.globalPosition, this.length - 2 * this.wheelOffset);
-            }
             passiveWheel.track = passiveTarget.track;
             passiveWheel.distance = passiveTarget.distance;
             passiveWheel.forward = passiveTarget.forward;

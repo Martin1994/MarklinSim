@@ -43,6 +43,22 @@ export class TrainView {
         this.sprite.addChild(trainLabel);
     }
 
+    public render(model: ITrain) {
+        this.sprite.x = model.frontWheel.x;
+        this.sprite.y = model.frontWheel.y;
+        this.sprite.rotation = Math.atan2(
+            model.frontWheel.y - model.backWheel.y,
+            model.frontWheel.x - model.backWheel.x
+        );
+        if (model.light !== this.isLightOn() || model.reversed !== this.isReversed()) {
+            if (model.light) {
+                this.turnLightOn(model.reversed);
+            } else {
+                this.turnLightOff();
+            }
+        }
+    }
+
     public turnLightOff() {
         this.sprite.beginFill(0xCCCCCC);
         this.sprite.lineStyle(2, 0x333333, 1);

@@ -5,11 +5,13 @@ import { ITickPayload } from '../util/tick_payload';
 import { Track } from '../model/track';
 import { StraightTrack } from '../model/straight_track';
 import { BezierTrack } from '../model/bezier_track';
+import { SwitchDirection, Switch } from '../model/switch';
 
 export class MarklinController {
-    private trains: Map<number, Train> = new Map<number, Train>();
-    private tracks: Map<number, Track> = new Map<number, Track>();
+    private readonly trains: Map<number, Train> = new Map<number, Train>();
+    private readonly tracks: Map<number, Track> = new Map<number, Track>();
     private io: MarklinIO = null;
+    private readonly launchTime: number = new Date().getTime();
 
     public setIO(io: MarklinIO) {
         this.io = io;
@@ -42,14 +44,6 @@ export class MarklinController {
         train.light = light;
     }
 
-    public getTrains() {
-        return this.trains.values();
-    }
-
-    public getTracks() {
-        return this.tracks.values();
-    }
-
     public reverseTrain(id: number) {
         if (!this.trains.has(id)) {
             console.warn(`Setting train speed for train out of track: ${id}.`);
@@ -57,6 +51,19 @@ export class MarklinController {
         }
         const train = this.trains.get(id);
         train.reverse();
+    }
+
+    public changeSwitchDirection(id: number, direction: SwitchDirection) {
+        if (!this.tracks.has(id)) {
+            console.warn(`Setting train speed for train out of track: ${id}.`);
+            return;
+        }
+        const swytch = this.tracks.get(id) as Switch;
+        if (!swytch) {
+            console.warn(`Setting train speed for train out of track: ${id}.`);
+            return;
+        }
+        swytch.changeDirection(direction);
     }
 
     public tick(interval: number) {
@@ -71,6 +78,7 @@ export class MarklinController {
 
     public getTick(delta: boolean) {
         const payload: ITickPayload = {
+            time: new Date().getTime() - this.launchTime,
             trains: [],
             objectChanged: !delta,
             drawTrack: !delta,
@@ -99,5 +107,13 @@ export class MarklinController {
         }
 
         return payload;
+    }
+
+    public getTrains() {
+        return this.trains.values();
+    }
+
+    public getTracks() {
+        return this.tracks.values();
     }
 }

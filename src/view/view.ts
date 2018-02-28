@@ -2,17 +2,23 @@ import { ITickPayload } from '../util/tick_payload';
 import * as PIXI from 'pixi.js';
 import { TrainView } from './display/train';
 import { TrackView } from './display/track';
+import { Dashboard } from './display/dashboard';
 
 export class View {
     private readonly app: PIXI.Application;
     private readonly trains: Map<number, TrainView> = new Map();
     private readonly trackView: TrackView;
+    private readonly dashboard: Dashboard;
 
     public constructor() {
         this.app = new PIXI.Application({width: 800, height: 600, antialias: true});
         this.app.renderer.backgroundColor = 0xffffff;
+
         this.trackView = new TrackView();
-        this.app.stage.addChild(this.trackView.sprite);
+        this.app.stage.addChild(this.trackView.getSprite());
+
+        this.dashboard = new Dashboard();
+        this.app.stage.addChild(this.dashboard.getSprite());
     }
 
     public install() {
@@ -20,6 +26,8 @@ export class View {
     }
 
     public render(payload: ITickPayload) {
+        this.dashboard.render(payload.time);
+
         if (payload.objectChanged) {
             for (const train of payload.trains) {
                 if (!this.trains.has(train.id)) {
@@ -30,22 +38,9 @@ export class View {
             }
         }
 
-        for (const train of payload.trains) {
-            const trainDisplay = this.trains.get(train.id);
-            const trainDisplayObject = trainDisplay.getSprite();
-            trainDisplayObject.x = train.frontWheel.x;
-            trainDisplayObject.y = train.frontWheel.y;
-            trainDisplayObject.rotation = Math.atan2(
-                train.frontWheel.y - train.backWheel.y,
-                train.frontWheel.x - train.backWheel.x
-            );
-            if (train.light !== trainDisplay.isLightOn() || train.reversed !== trainDisplay.isReversed()) {
-                if (train.light) {
-                    trainDisplay.turnLightOn(train.reversed);
-                } else {
-                    trainDisplay.turnLightOff();
-                }
-            }
+        for (const trainModel of payload.trains) {
+            const trainView = this.trains.get(trainModel.id);
+            trainView.render(trainModel);
         }
 
         if (payload.drawTrack) {

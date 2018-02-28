@@ -1,5 +1,13 @@
 import { IPoint2D, distance2D } from '../util/point2d';
 
+/**
+ * The track model. It records which tracks to connect with,
+ * and controls the behaviour of active and passive wheel movement.
+ *
+ * This is the abstract track, which only knows the relative distance to the track's head.
+ * It doesn't know the global position of any point on this track. Thus the movement
+ * behaviour of passive wheels are controled by specific track implementations.
+ */
 export abstract class Track {
     public readonly id: number;
     protected readonly length: number;
@@ -100,8 +108,21 @@ export abstract class Track {
      */
     public abstract getGlobalPosition(distance: number): IPoint2D;
 
+    /**
+     * Control points for display purpose.
+     *
+     * @return An array of control points.
+     */
     public abstract getControlPoints(): IPoint2D[];
 
+    /**
+     * Helper function to connect two tracks.
+     *
+     * @param track1 The first track.
+     * @param head1 Whether to connect the head or the tail of the first track.
+     * @param track2 The second track.
+     * @param head2 Whether to connect the head or the tail of the second track.
+     */
     public static connect(track1: Track, head1: boolean, track2: Track, head2: boolean) {
         const tolerance = 1e-7;
         if (distance2D(head1 ? track1.start : track1.end, head2 ? track2.start : track2.end) > tolerance) {

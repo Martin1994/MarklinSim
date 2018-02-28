@@ -81,27 +81,6 @@ export class BezierTrack extends Track {
         const forward = dotProduct > 0;
         const pulling = distance2D(passivePosition, activePosition) > spacing;
 
-        // Check boundary
-        if (forward === pulling) {
-            if (distance2D(this.end, activePosition) > spacing === pulling) {
-                if (from === this.nextTrack.track) {
-                    return null;
-                } else {
-                    const startingPoint = this.nextTrack.head ? 0 : this.nextTrack.track.getLength();
-                    return this.nextTrack.track.movePassive(startingPoint, activePosition, spacing, this);
-                }
-            }
-        } else {
-            if (distance2D(this.start, activePosition) > spacing === pulling) {
-                if (from === this.previousTrack.track) {
-                    return null;
-                } else {
-                    const startingPoint = this.previousTrack.head ? 0 : this.previousTrack.track.getLength();
-                    return this.previousTrack.track.movePassive(startingPoint, activePosition, spacing, this);
-                }
-            }
-        }
-
         // By the intermediate value theorem, the solution lays on this bezier curve.
         // Binary search
         const tolerance = 1e-6 * spacing;
@@ -123,7 +102,29 @@ export class BezierTrack extends Track {
             } else {
                 upper = t;
             }
-        } while (Math.abs(testDistance - spacing) > tolerance);
+
+            if (t < tolerance) {
+                if (this.previousTrack.track === from) {
+                    return null;
+                } else {
+                    const trackInfo = this.previousTrack;
+                    const startPosition = trackInfo.head ? 0 : trackInfo.track.getLength();
+                    return trackInfo.track.movePassive(startPosition, activePosition, spacing, this);
+                }
+            }
+
+            if (1 - t < tolerance) {
+                if (this.nextTrack.track === from) {
+                    return null;
+                } else {
+                    const trackInfo = this.nextTrack;
+                    const startPosition = trackInfo.head ? 0 : trackInfo.track.getLength();
+                    return trackInfo.track.movePassive(startPosition, activePosition, spacing, this);
+                }
+            }
+        } while (Math.abs(testDistance - spacing) / spacing > tolerance);
+
+        console.log(t);
 
         return {
             track: this,
@@ -131,66 +132,6 @@ export class BezierTrack extends Track {
             forward: forward,
             globalPosition: this.bezier.get(t)
         };
-    }
-
-    public movePassive2(
-        passivePosition: IPoint2D, activePosition: IPoint2D, spacing: number, from?: Track): IPositionOnTrack {
-        if (!activePosition || spacing < 0) {
-            throw new Error('Invalid passive moving.');
-        }
-
-        // Check intersections with a circle approximation
-        // Source: http://spencermortensen.com/articles/bezier-circle/
-        const c = 0.551915024494 * spacing;
-        const oX = activePosition.x;
-        const oY = activePosition.y;
-        const circleSegments = [
-            new Bezier(oX, spacing + oY, c + oX, spacing + oY, spacing + oX, c + oY, spacing + oX, oY),
-            new Bezier(spacing + oX, oY, spacing + oX, -c + oY, c + oX, -spacing + oY, oX, -spacing + oY),
-            new Bezier(oX, -spacing + oY, -c + oX, -spacing + oY, -spacing + oX, -c + oY, -spacing + oX, oY),
-            new Bezier(-spacing + oX, oY, -spacing + oX, c + oY, -c + oX, spacing + oY, oX, spacing + oY)
-        ];
-        const intersections: number[] = [];
-        for (const segment of circleSegments) {
-            for (const pairStr of (this.bezier.intersects(segment) as string[])) {
-                intersections.push(Number.parseFloat(pairStr.split('/')[0]));
-            }
-        }
-
-        // Choose the closest one
-        let minDistance = Infinity;
-        let minPoint = null;
-        let minT = 0;
-        for (const t of intersections) {
-            const p = this.bezier.get(t);
-            const distance = distance2D(p, passivePosition);
-            if (distance < minDistance) {
-                minDistance = distance;
-                minPoint = p;
-                minT = t;
-            }
-        }
-
-        if (minPoint) {
-            return {
-                track: this,
-                distance: this.bezier.split(0, minT).length(),
-                forward: distance2D(activePosition, this.start) > distance2D(minPoint, this.end),
-                globalPosition: minPoint
-            };
-        } else if (distance2D(activePosition, this.start) < distance2D(activePosition, this.end)) {
-            if (this.previousTrack.track === from) {
-                return null;
-            } else {
-                //return this.previousTrack.track.movePassive(this.start, activePosition, spacing, this);
-            }
-        } else {
-            if (this.nextTrack.track === from) {
-                return null;
-            } else {
-                //return this.nextTrack.track.movePassive(this.start, activePosition, spacing, this);
-            }
-        }
     }
 
     public getControlPoints(): IPoint2D[] {
