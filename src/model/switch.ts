@@ -80,17 +80,46 @@ export class Switch extends Track {
     /**
      * Helper function to connect switch's next tracks.
      *
-     * @param track1 The straight track.
-     * @param head1 Whether to connect the head or the tail of the straight track.
-     * @param track2 The curve track.
-     * @param head2 Whether to connect the head or the tail of the curve track.
+     * @param branch The branched track.
+     * @param straight The straight track.
+     * @param curve The curve track.
      */
-    public connect(track1: Track, head1: boolean, track2: Track, head2: boolean) {
-        const direction = this.direction;
+    public connect(branch: Track, straight: Track, curve: Track) {
+        // Find heads
+        let branchHead: boolean;
+        let straightHead: boolean;
+        let curveHead: boolean;
+
+        if (distance2D(this.start, branch.getStartPoint()) < Track.connectionTolerance) {
+            branchHead = true;
+        } else if (distance2D(this.start, branch.getEndPoint()) < Track.connectionTolerance) {
+            branchHead = false;
+        } else {
+            throw new Error(`Switch ${this.id} and track ${branch.id} are not adjacent.`);
+        }
+
+        if (distance2D(this.start, straight.getStartPoint()) < Track.connectionTolerance) {
+            straightHead = true;
+        } else if (distance2D(this.start, straight.getEndPoint()) < Track.connectionTolerance) {
+            straightHead = false;
+        } else {
+            throw new Error(`Switch ${this.id} and track ${straight.id} are not adjacent.`);
+        }
+
+        if (distance2D(this.start, curve.getStartPoint()) < Track.connectionTolerance) {
+            curveHead = true;
+        } else if (distance2D(this.start, curve.getEndPoint()) < Track.connectionTolerance) {
+            curveHead = false;
+        } else {
+            throw new Error(`Switch ${this.id} and track ${curve.id} are not adjacent.`);
+        }
+
+        const originalDirection = this.direction;
+        Track.connectManually(this, true, branch, branchHead);
         this.changeDirection(SwitchDirection.Straight);
-        Track.connect(this, false, track1, head1);
+        Track.connectManually(this, false, straight, straightHead);
         this.changeDirection(SwitchDirection.Curve);
-        Track.connect(this, false, track2, head2);
-        this.changeDirection(direction);
+        Track.connectManually(this, false, curve, curveHead);
+        this.changeDirection(originalDirection);
     }
 }

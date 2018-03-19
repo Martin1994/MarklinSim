@@ -1,7 +1,8 @@
 import * as config from './config';
 import { MarklinIO } from './marklin/marklin_io';
 import { MarklinController } from './marklin/marklin_controller';
-import { MarklinTrackA } from './marklin/setup/track_a';
+import { TrackDrift } from './marklin/setup/track_drift';
+import { TrackA } from './marklin/setup/track_a';
 import { ElectronApp } from './electron_app';
 import { ipcMain, Event } from 'electron';
 import { ITickPayload } from './util/tick_payload';
@@ -14,7 +15,8 @@ const controller = new MarklinController();
 io.setController(controller);
 controller.setIO(io);
 
-MarklinTrackA.setup(controller);
+// TrackDrift.setup(controller);
+TrackA.setup(controller);
 
 const eApp = new ElectronApp();
 eApp.start();

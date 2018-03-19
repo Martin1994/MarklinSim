@@ -88,12 +88,13 @@ export class BezierTrack extends Track {
         let upper: number;
         let lower: number;
         let testDistance: number;
+        const projection = this.bezier.project(activePosition).t;
         if (forward === pulling) {
-            upper = 1;
+            upper = projection > t ? projection : 1;
             lower = t;
         } else {
             upper = t;
-            lower = 0;
+            lower = projection < t ? projection : 0;
         }
         do {
             t = (upper + lower) / 2;
@@ -104,7 +105,7 @@ export class BezierTrack extends Track {
                 upper = t;
             }
 
-            if (t < tolerance) {
+            if (t < tTolerance) {
                 if (this.previousTrack.track === from) {
                     return null;
                 } else {

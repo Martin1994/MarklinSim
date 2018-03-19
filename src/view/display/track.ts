@@ -25,7 +25,8 @@ export class TrackView {
     }
 
     private renderStraightTrack(track: IPoint2D[]) {
-        const coefficient = config.TRACK_WIDTH / 2 / distance2D(track[0], track[1]);
+        track = track.map(TrackView.translate);
+        const coefficient = config.PIXEL_PER_CENTIMETER * config.TRACK_WIDTH / 2 / distance2D(track[0], track[1]);
         const normal: IPoint2D = {
             x: (track[1].y - track[0].y) * coefficient,
             y: (track[0].x - track[1].x) * coefficient
@@ -39,11 +40,12 @@ export class TrackView {
     }
 
     private renderBezierTrack(track: IPoint2D[]) {
+        track = track.map(TrackView.translate);
         const route = new Bezier(
             track[0].x, track[0].y, track[1].x, track[1].y, track[2].x, track[2].y, track[3].x, track[3].y);
 
-        const inner = route.offset(-config.TRACK_WIDTH / 2) as Bezier[];
-        const outer = route.offset(config.TRACK_WIDTH / 2) as Bezier[];
+        const inner = route.offset(-config.TRACK_WIDTH * config.PIXEL_PER_CENTIMETER / 2) as Bezier[];
+        const outer = route.offset(config.TRACK_WIDTH * config.PIXEL_PER_CENTIMETER / 2) as Bezier[];
 
         for (const sub of inner.concat(outer)) {
             const points = sub.points;
@@ -112,5 +114,17 @@ export class TrackView {
 
     public getSprite(): PIXI.DisplayObject {
         return this.sprite;
+    }
+
+    /**
+     * Translate from track coordication to screen coordinaton
+     * @param trackPoint Point with coordination of track.
+     * @return Point with coordination of screen.
+     */
+    public static translate(trackPoint: IPoint2D): IPoint2D {
+        return {
+            x: config.TRACK_OFFSET_X + trackPoint.x * config.PIXEL_PER_CENTIMETER,
+            y: config.TRACK_OFFSET_Y + trackPoint.y * config.PIXEL_PER_CENTIMETER
+        };
     }
 }

@@ -16,6 +16,8 @@ export abstract class Track {
 
     protected readonly width = 8;
 
+    public static readonly connectionTolerance = 1e-7;
+
     /** The previous track. Null means no track. */
     protected previousTrack: ITrackConnection = null;
 
@@ -123,9 +125,9 @@ export abstract class Track {
      * @param track2 The second track.
      * @param head2 Whether to connect the head or the tail of the second track.
      */
-    public static connect(track1: Track, head1: boolean, track2: Track, head2: boolean) {
-        const tolerance = 1e-7;
-        if (distance2D(head1 ? track1.start : track1.end, head2 ? track2.start : track2.end) > tolerance) {
+    protected static connectManually(track1: Track, head1: boolean, track2: Track, head2: boolean) {
+        const connectionDistance = distance2D(head1 ? track1.start : track1.end, head2 ? track2.start : track2.end);
+        if (connectionDistance > this.connectionTolerance) {
             throw new Error('Track connection mismatch.');
         }
         const track1Info: ITrackConnection = {
@@ -146,6 +148,34 @@ export abstract class Track {
         } else {
             track2.nextTrack = track1Info;
         }
+    }
+    /**
+     * Helper function to connect two tracks.
+     *
+     * @param track1 The first track.
+     * @param track2 The second track.
+     */
+    public static connect(track1: Track, track2: Track) {
+        // Find head
+        let head1: boolean;
+        let head2: boolean;
+        if (distance2D(track1.start, track2.start) < this.connectionTolerance) {
+            head1 = true;
+            head2 = true;
+        } else if (distance2D(track1.start, track2.end) < this.connectionTolerance) {
+            head1 = true;
+            head2 = false;
+        } else if (distance2D(track1.end, track2.start) < this.connectionTolerance) {
+            head1 = false;
+            head2 = true;
+        } else if (distance2D(track1.end, track2.end) < this.connectionTolerance) {
+            head1 = false;
+            head2 = false;
+        } else {
+            throw new Error(`Track ${track1.id} and track ${track2.id} are not adjacent.`);
+        }
+
+        this.connectManually(track1, head1, track2, head2);
     }
 }
 
