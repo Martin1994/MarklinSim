@@ -51,7 +51,7 @@ export class TrackFactory {
     public static quadrant(array: Track[], id: number, startX: number, startY: number, endX: number, endY: number) {
         // Use cubic bezier curve to approximate a quadrant
         // Source: http://spencermortensen.com/articles/bezier-circle/
-        const cOverSqrt2 = Math.SQRT1_2 * 0.55191502449;
+        const cOverSqrt2 = 0.5 * 0.55191502449;
         const dx = endX - startX;
         const dy = endY - startY;
         const start: IPoint2D = {

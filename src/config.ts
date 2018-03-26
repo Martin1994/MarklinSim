@@ -3,7 +3,7 @@ export const SOCKET_URL: string = '/tmp/marklinsim.sock';
 
 export const TICK_RATE: number = 120;
 
-export const PIXEL_PER_CENTIMETER: number = 2;
+export const PIXEL_PER_CENTIMETER: number = 4;
 export const TRACK_OFFSET_X: number = 50;
 export const TRACK_OFFSET_Y: number = 50;
 
@@ -17,6 +17,8 @@ export const TRAIN_LIGHT_WIDTH: number = 2;
 
 export const TRACK_WIDTH: number = 2;
 export const TURNOUT_PORTION: number = 0.5;
+
+export const SENSOR_TRIGGER_WIDTH: number = 3;
 
 export const MONOSPACE_FONTS: string[] = [
     'Consolas',

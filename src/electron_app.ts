@@ -14,7 +14,7 @@ export class ElectronApp {
     }
 
     private createWindow() {
-        this.win = new BrowserWindow({width: 825, height: 650});
+        this.win = new BrowserWindow({width: 1000, height: 600});
 
         this.win.loadURL(url.format({
             pathname: path.join(__dirname, 'view', 'index.html'),

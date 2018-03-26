@@ -36,11 +36,11 @@ export class TrackDrift {
 
         setTimeout(() => {
             controller.changeSwitchDirection(1, SwitchDirection.Straight);
-        }, 4500 + delay);
+        }, 3000 + delay);
     }
 
     private static createTracks(tracks: Track[]) {
-        const scale = 0.5;
+        const scale = 0.25;
         // Main loop
         TrackFactory.straight(tracks, 0x100, 150 * scale, 100 * scale, 650 * scale, 100 * scale);
         TrackFactory.quadrant(tracks, 0x101, 650 * scale, 100 * scale, 700 * scale, 150 * scale);
@@ -52,9 +52,9 @@ export class TrackDrift {
         TrackFactory.quadrant(tracks, 0x107, 100 * scale, 150 * scale, 150 * scale, 100 * scale);
 
         // Branch
-        TrackFactory.quadrant(tracks, 0x111, 650 * scale, 100 * scale, 710 * scale, 160 * scale);
-        TrackFactory.straight(tracks, 0x112, 710 * scale, 160 * scale, 710 * scale, 440 * scale);
-        TrackFactory.quadrant(tracks, 0x113, 710 * scale, 440 * scale, 650 * scale, 500 * scale);
+        TrackFactory.quadrant(tracks, 0x111, 650 * scale, 100 * scale, 725 * scale, 175 * scale);
+        TrackFactory.straight(tracks, 0x112, 725 * scale, 175 * scale, 725 * scale, 425 * scale);
+        TrackFactory.quadrant(tracks, 0x113, 725 * scale, 425 * scale, 650 * scale, 500 * scale);
     }
 
     private static connectTracks(tracks: Track[]) {
