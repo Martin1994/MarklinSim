@@ -1,6 +1,7 @@
 import * as config from '../config';
 import { Track } from './track';
 import { IPoint2D } from '../util/point2d';
+import { Sensor } from './sensor';
 
 /**
  * The train model. It can move, accelerate, and turns on and off its light.
@@ -100,10 +101,6 @@ export class Train {
 
             const passiveTarget = passiveWheel.track.movePassive(
                 passiveWheel.distance, wheel.globalPosition, this.length - 2 * this.wheelOffset);
-            if (!passiveTarget) {
-                const passiveTarget2 = passiveWheel.track.movePassive(
-                    passiveWheel.distance, wheel.globalPosition, this.length - 2 * this.wheelOffset);
-            }
             passiveWheel.track = passiveTarget.track;
             passiveWheel.distance = passiveTarget.distance;
             passiveWheel.forward = passiveTarget.forward;
@@ -135,6 +132,10 @@ export class Train {
             serialized.wheelOffset = this.wheelOffset;
         }
         return serialized;
+    }
+
+    public getTriggeredSensors(): Sensor[] {
+        return this.frontWheel.track.getSensorAt(this.frontWheel.distance, this.frontWheel.forward);
     }
 }
 

@@ -13,7 +13,6 @@ io.listenTCP(config.SOCKET_PORT);
 const controller = new MarklinController();
 
 io.setController(controller);
-controller.setIO(io);
 
 // TrackDrift.setup(controller);
 TrackA.setup(controller);

@@ -1,21 +1,21 @@
 import { Train } from '../model/train';
-import { MarklinIO } from './marklin_io';
 import * as config from '../config';
 import { ITickPayload, ITrackPortion } from '../util/tick_payload';
 import { Track } from '../model/track';
 import { StraightTrack } from '../model/straight_track';
 import { BezierTrack } from '../model/bezier_track';
 import { SwitchDirection, Switch } from '../model/switch';
+import { Sensor } from '../model/sensor';
 
 export class MarklinController {
     private readonly trains: Map<number, Train> = new Map<number, Train>();
     private readonly tracks: Map<number, Track> = new Map<number, Track>();
     private readonly switches: Map<number, Switch> = new Map<number, Switch>();
-    private io: MarklinIO = null;
+    private reportSensor: (sensors: boolean[]) => void = null;
     private readonly launchTime: number = new Date().getTime();
 
-    public setIO(io: MarklinIO) {
-        this.io = io;
+    public setSensorReportCallback(reportSensor: (sensors: boolean[]) => void) {
+        this.reportSensor = reportSensor;
     }
 
     public registerTrain(train: Train) {
@@ -64,6 +64,14 @@ export class MarklinController {
         }
         const swytch = this.switches.get(id);
         swytch.changeDirection(direction);
+    }
+
+    public requestSensorReporting() {
+        const triggered: Sensor[] = [];
+        for (const train of this.trains.values()) {
+            triggered.push.apply(triggered, train.getTriggeredSensors());
+        }
+        return triggered;
     }
 
     public tick(interval: number) {
@@ -121,10 +129,12 @@ export class MarklinController {
                 } else if (online.track instanceof BezierTrack) {
                     tracks = payload.onlineSwitchBezierTracks;
                 }
-                tracks.push({
-                    track: online.track.getControlPoints(),
-                    head: online.head
-                });
+                if (tracks) {
+                    tracks.push({
+                        track: online.track.getControlPoints(),
+                        head: online.head
+                    });
+                }
 
                 const offline = track.getOfflineTrack();
                 if (offline.track instanceof StraightTrack) {
@@ -132,10 +142,12 @@ export class MarklinController {
                 } else if (offline.track instanceof BezierTrack) {
                     tracks = payload.offlineSwitchBezierTracks;
                 }
-                tracks.push({
-                    track: offline.track.getControlPoints(),
-                    head: offline.head
-                });
+                if (tracks) {
+                    tracks.push({
+                        track: offline.track.getControlPoints(),
+                        head: offline.head
+                    });
+                }
 
                 track.directionDirty = false;
             }

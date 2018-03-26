@@ -6,9 +6,9 @@ import { MarklinDecoder } from './marklin_decoder';
 export class MarklinIO {
 
     private readonly server: net.Server;
+    private readonly decoder: MarklinDecoder = new MarklinDecoder();
     private client: net.Socket = null;
     private controller: MarklinController = null;
-    private decoder: MarklinDecoder = null;
 
     constructor() {
         this.server = net.createServer((socket: net.Socket) => {
@@ -32,7 +32,11 @@ export class MarklinIO {
 
     public setController(controller: MarklinController) {
         this.controller = controller;
-        this.decoder = new MarklinDecoder();
+        this.controller.setSensorReportCallback(this.reportSensor);
+    }
+
+    public reportSensor(sensors: boolean[]) {
+        this.client.write(new Buffer(this.decoder.encodeSensor(sensors)));
     }
 
     public listenTCP(port: number) {

@@ -26,11 +26,11 @@ export class TrainView {
         this.spriteDrawRect(-this.length + this.wheelOffset, -this.width / 2, this.length, this.width);
         this.sprite.endFill();
         this.sprite.beginFill(0xCC3333);
-        this.sprite.drawCircle(0, 0, this.width / 4);
+        this.sprite.drawCircle(0, 0, this.width / 4 * config.PIXEL_PER_CENTIMETER);
         this.sprite.endFill();
 
         // Add train number
-        const fontSize = Math.floor(model.width * 0.9);
+        const fontSize = Math.floor(model.width * config.PIXEL_PER_CENTIMETER * 0.9);
         const style = new PIXI.TextStyle({
             align: 'center',
             fontFamily: config.MONOSPACE_FONTS,
@@ -38,8 +38,8 @@ export class TrainView {
             fill: 0x333333
         });
         const trainLabel = new PIXI.Text(model.id.toString(10), style);
-        trainLabel.y = -fontSize / 2 * config.PIXEL_PER_CENTIMETER;
-        trainLabel.x = -this.length + 2 * this.wheelOffset * config.PIXEL_PER_CENTIMETER;
+        trainLabel.y = -fontSize / 2;
+        trainLabel.x = (-this.length + 2 * this.wheelOffset) * config.PIXEL_PER_CENTIMETER;
 
         this.turnLightOff();
 

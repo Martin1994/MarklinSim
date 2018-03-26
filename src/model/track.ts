@@ -1,4 +1,5 @@
 import { IPoint2D, distance2D } from '../util/point2d';
+import { Sensor } from './sensor';
 
 /**
  * The track model. It records which tracks to connect with,
@@ -14,8 +15,6 @@ export abstract class Track {
     protected readonly start: IPoint2D;
     protected readonly end: IPoint2D;
 
-    protected readonly width = 8;
-
     public static readonly connectionTolerance = 1e-7;
 
     /** The previous track. Null means no track. */
@@ -23,6 +22,8 @@ export abstract class Track {
 
     /** The next track. Null means no track. */
     protected nextTrack: ITrackConnection = null;
+
+    private readonly sensors: Sensor[] = [];
 
     protected constructor(id: number, start: IPoint2D, end: IPoint2D, length: number) {
         this.id = id;
@@ -49,6 +50,20 @@ export abstract class Track {
 
     public setNextTrack(track: Track, head: boolean) {
         this.previousTrack = { track, head };
+    }
+
+    public addSensor(id: number, name: string, distanceToHead: number, forward: boolean) {
+        this.sensors.push(new Sensor(id, name, distanceToHead, forward));
+    }
+
+    public getSensorAt(distance: number, forward: boolean): Sensor[] {
+        const sensors: Sensor[] = [];
+        for (const sensor of this.sensors) {
+            if (forward === sensor.forward && Math.abs(sensor.distanceToHead - distance) < sensor.width) {
+                sensors.push(sensor);
+            }
+        }
+        return sensors;
     }
 
     /**

@@ -11,7 +11,7 @@ export class View {
     private readonly dashboard: Dashboard;
 
     public constructor() {
-        this.app = new PIXI.Application({width: 800, height: 600, antialias: true});
+        this.app = new PIXI.Application({width: 1000, height: 600, antialias: true});
         this.app.renderer.backgroundColor = 0xffffff;
 
         this.trackView = new TrackView();
