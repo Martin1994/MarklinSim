@@ -32,7 +32,7 @@ export class MarklinIO {
 
     public setController(controller: MarklinController) {
         this.controller = controller;
-        this.controller.setSensorReportCallback(this.reportSensor);
+        this.controller.setSensorReportCallback((sensors: boolean[]) => this.reportSensor(sensors));
     }
 
     public reportSensor(sensors: boolean[]) {

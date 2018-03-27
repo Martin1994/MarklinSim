@@ -56,10 +56,14 @@ export abstract class Track {
         this.sensors.push(new Sensor(id, name, distanceToHead, forward));
     }
 
-    public getSensorAt(distance: number, forward: boolean): Sensor[] {
+    public getSensors(): Sensor[] {
+        return this.sensors;
+    }
+
+    public getSensorsAt(distance: number, forward: boolean): Sensor[] {
         const sensors: Sensor[] = [];
         for (const sensor of this.sensors) {
-            if (forward === sensor.forward && Math.abs(sensor.distanceToHead - distance) < sensor.width) {
+            if (forward === sensor.forward && Math.abs(sensor.distanceToHead - distance) < sensor.width / 2) {
                 sensors.push(sensor);
             }
         }

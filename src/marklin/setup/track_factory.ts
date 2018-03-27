@@ -95,4 +95,26 @@ export class TrackFactory {
         array[id] = new Switch(id, position);
         (array[id] as Switch).connect(branch, straight, curve);
     }
+
+    public static sensor(track: Track, name: string, distance: number, forward: boolean) {
+        if (name.length < 2) {
+            throw new Error('Invalid sensor name');
+        }
+        const module = name.charCodeAt(0) - "A".charCodeAt(0);
+        const offset = parseInt(name.substr(1), 10) - 1;
+        if (module < 0 || module >= 5) {
+            throw new Error('Invalid sensor name');
+        }
+        if (!isFinite(offset) || offset < 0 || offset >= 16 || offset % 2 === 1) {
+            throw new Error('Invalid sensor name');
+        }
+
+        if (distance < 0) {
+            distance = track.getLength() + distance;
+        }
+
+        const id = module * 16 + offset;
+        track.addSensor(id, name, distance, forward);
+        track.addSensor(id + 1, name.charCodeAt(0) + (offset + 2).toString(10).toUpperCase(), distance, !forward);
+    }
 }

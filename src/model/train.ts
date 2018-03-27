@@ -135,7 +135,7 @@ export class Train {
     }
 
     public getTriggeredSensors(): Sensor[] {
-        return this.frontWheel.track.getSensorAt(this.frontWheel.distance, this.frontWheel.forward);
+        return this.frontWheel.track.getSensorsAt(this.frontWheel.distance, this.frontWheel.forward);
     }
 }
 

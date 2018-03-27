@@ -19,7 +19,7 @@ export class MarklinDecoder {
         const encoded = new Uint8Array(Math.ceil(sensors.length / 8));
         for (let i = 0; i < sensors.length; i++) {
             if (sensors[i]) {
-                encoded[Math.floor(i / 8)] |= 1 << (i % 8);
+                encoded[Math.floor(i / 8)] |= 1 << (7 - i % 8);
             }
         }
         return encoded;

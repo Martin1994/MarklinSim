@@ -18,7 +18,8 @@ export const TRAIN_LIGHT_WIDTH: number = 2;
 export const TRACK_WIDTH: number = 2;
 export const TURNOUT_PORTION: number = 0.5;
 
-export const SENSOR_TRIGGER_WIDTH: number = 3;
+export const SENSOR_TRIGGER_WIDTH: number = 6;
+export const SENSOR_REPORT_DELAY_MS: number = 100;
 
 export const MONOSPACE_FONTS: string[] = [
     'Consolas',

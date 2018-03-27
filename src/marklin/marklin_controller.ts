@@ -13,6 +13,7 @@ export class MarklinController {
     private readonly switches: Map<number, Switch> = new Map<number, Switch>();
     private reportSensor: (sensors: boolean[]) => void = null;
     private readonly launchTime: number = new Date().getTime();
+    private sensorQuantity: number = -1;
 
     public setSensorReportCallback(reportSensor: (sensors: boolean[]) => void) {
         this.reportSensor = reportSensor;
@@ -67,11 +68,30 @@ export class MarklinController {
     }
 
     public requestSensorReporting() {
-        const triggered: Sensor[] = [];
-        for (const train of this.trains.values()) {
-            triggered.push.apply(triggered, train.getTriggeredSensors());
+        if (this.sensorQuantity < 0) {
+            for (const track of this.tracks.values()) {
+                for (const sensor of track.getSensors()) {
+                    if (this.sensorQuantity < sensor.id) {
+                        this.sensorQuantity = sensor.id;
+                    }
+                }
+            }
+            this.sensorQuantity++;
         }
-        return triggered;
+
+        const triggered: boolean[] = new Array<boolean>(this.sensorQuantity);
+        for (let i = 0; i < this.sensorQuantity; i++) {
+            triggered[i] = false;
+        }
+        for (const train of this.trains.values()) {
+            for (const sensor of train.getTriggeredSensors()) {
+                triggered[sensor.id] = true;
+            }
+        }
+
+        setTimeout(() => {
+            this.reportSensor(triggered);
+        }, config.SENSOR_REPORT_DELAY_MS);
     }
 
     public tick(interval: number) {
