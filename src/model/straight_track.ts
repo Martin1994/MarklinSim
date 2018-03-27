@@ -101,4 +101,8 @@ export class StraightTrack extends Track {
     public getControlPoints(): IPoint2D[] {
         return [this.start, this.end];
     }
+
+    public getDirection(distance: number): number {
+        return Math.atan2(this.getEndPoint().y - this.getStartPoint().y, this.getEndPoint().x - this.getStartPoint().x);
+    }
 }

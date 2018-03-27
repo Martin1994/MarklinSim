@@ -1,7 +1,7 @@
 import { ITickPayload } from '../util/tick_payload';
 import * as PIXI from 'pixi.js';
-import { TrainView } from './display/train';
-import { TrackView } from './display/track';
+import { TrainView } from './display/train_view';
+import { TrackView } from './display/track_view';
 import { Dashboard } from './display/dashboard';
 
 export class View {
@@ -53,5 +53,9 @@ export class View {
             payload.offlineSwitchStraightTracks,
             payload.offlineSwitchBezierTracks
         );
+
+        this.trackView.renderSwitchNames(payload.switches);
+
+        this.trackView.renderSensorNames(payload.sensors);
     }
 }

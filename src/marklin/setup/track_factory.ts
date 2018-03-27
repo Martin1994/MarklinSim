@@ -115,6 +115,6 @@ export class TrackFactory {
 
         const id = module * 16 + offset;
         track.addSensor(id, name, distance, forward);
-        track.addSensor(id + 1, name.charCodeAt(0) + (offset + 2).toString(10).toUpperCase(), distance, !forward);
+        track.addSensor(id + 1, name.charAt(0) + (offset + 2).toString(10).toUpperCase(), distance, !forward);
     }
 }

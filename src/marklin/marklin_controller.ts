@@ -115,7 +115,9 @@ export class MarklinController {
             onlineSwitchStraightTracks: [],
             offlineSwitchStraightTracks: [],
             onlineSwitchBezierTracks: [],
-            offlineSwitchBezierTracks: []
+            offlineSwitchBezierTracks: [],
+            switches: [],
+            sensors: []
         };
 
         // Put train info
@@ -139,11 +141,11 @@ export class MarklinController {
         }
 
         // Put Switch info
-        for (const track of this.switches.values()) {
-            if (!delta || track.directionDirty) {
+        for (const swytch of this.switches.values()) {
+            if (!delta || swytch.directionDirty) {
                 let tracks: ITrackPortion[];
 
-                const online = track.getOnlineTrack();
+                const online = swytch.getOnlineTrack();
                 if (online.track instanceof StraightTrack) {
                     tracks = payload.onlineSwitchStraightTracks;
                 } else if (online.track instanceof BezierTrack) {
@@ -156,7 +158,7 @@ export class MarklinController {
                     });
                 }
 
-                const offline = track.getOfflineTrack();
+                const offline = swytch.getOfflineTrack();
                 if (offline.track instanceof StraightTrack) {
                     tracks = payload.offlineSwitchStraightTracks;
                 } else if (offline.track instanceof BezierTrack) {
@@ -169,7 +171,23 @@ export class MarklinController {
                     });
                 }
 
-                track.directionDirty = false;
+                swytch.directionDirty = false;
+            }
+        }
+
+        // Put switch name
+        if (!delta) {
+            for (const swytch of this.switches.values()) {
+                payload.switches.push(swytch.getPositionMetadata());
+            }
+        }
+
+        // Put sensor name
+        if (!delta) {
+            for (const track of this.tracks.values()) {
+                for (const sensor of track.getSensorMetadata()) {
+                    payload.sensors.push(sensor);
+                }
             }
         }
 

@@ -1,5 +1,5 @@
 import { Track, IPositionOnTrack } from './track';
-import { IPoint2D, distance2D } from '../util/point2d';
+import { IPoint2D, distance2D, dot2D } from '../util/point2d';
 import Bezier = require('bezier-js');
 import { WSAESOCKTNOSUPPORT } from 'constants';
 
@@ -69,7 +69,7 @@ export class BezierTrack extends Track {
             x: activePosition.x - passivePosition.x,
             y: activePosition.y - passivePosition.y
         };
-        const dotProduct = derivative.x * delta.x + derivative.y * delta.y;
+        const dotProduct = dot2D(derivative, delta);
 
         // const helperInitialDistance = distance2D(passivePosition, activePosition);
         // const helperStartDistance = distance2D(this.start, activePosition);
@@ -136,5 +136,10 @@ export class BezierTrack extends Track {
 
     public getControlPoints(): IPoint2D[] {
         return this.bezier.points;
+    }
+
+    public getDirection(distance: number): number {
+        const derivative = this.bezier.derivative(this.getTByDistance(distance));
+        return Math.atan2(derivative.y, derivative.x);
     }
 }

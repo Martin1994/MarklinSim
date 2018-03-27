@@ -1,8 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { IPoint2D, distance2D } from '../../util/point2d';
+import { IPoint2D, distance2D, rotate2D } from '../../util/point2d';
 import Bezier = require('bezier-js');
 import * as config from '../../config';
-import { ITrackPortion } from '../../util/tick_payload';
+import { ITrackPortion, ISwitch, ISensor } from '../../util/tick_payload';
 
 export class TrackView {
     private readonly sprite: PIXI.Graphics;
@@ -109,6 +109,48 @@ export class TrackView {
         }
         for (const track of onlineSwitchBezierTracks) {
             this.renderBezierTrackPortion(track.track, track.head);
+        }
+    }
+
+    public renderSwitchNames(switches: ISwitch[]) {
+        const style = new PIXI.TextStyle({
+            fontFamily: config.MONOSPACE_FONTS,
+            fontSize: 12,
+            fill: 0x33CC33
+        });
+        for (const swytch of switches) {
+            const text = new PIXI.Text(swytch.name, style);
+            const yOffset = (swytch.turningRight ? 1 : -1) * config.TRACK_WIDTH * 2;
+            const offset = rotate2D({ x: config.TRACK_WIDTH * 1.5, y: yOffset }, swytch.rotation);
+            const position = TrackView.translate({
+                x: swytch.position.x + offset.x,
+                y: swytch.position.y + offset.y
+            });
+            text.x = position.x;
+            text.y = position.y;
+            text.anchor.set(0.5);
+            this.sprite.addChild(text);
+        }
+    }
+
+    public renderSensorNames(sensors: ISensor[]) {
+        const style = new PIXI.TextStyle({
+            fontFamily: config.MONOSPACE_FONTS,
+            fontSize: 10,
+            fill: 0x333333
+        });
+        for (const sensor of sensors) {
+            const text = new PIXI.Text(sensor.name, style);
+            const offset = rotate2D({ x: 0, y: config.TRACK_WIDTH * 1.5 }, sensor.rotation);
+            const position = TrackView.translate({
+                x: sensor.position.x + offset.x,
+                y: sensor.position.y + offset.y
+            });
+            text.x = position.x;
+            text.y = position.y;
+            text.anchor.set(0.5);
+            text.rotation = sensor.rotation;
+            this.sprite.addChild(text);
         }
     }
 

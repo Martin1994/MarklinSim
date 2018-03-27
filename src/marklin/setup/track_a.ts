@@ -51,7 +51,7 @@ export class TrackA {
         // Sensors
         TrackFactory.sensor(tracks[0x100], "A1", 47.48, true);
         TrackFactory.sensor(tracks[0x102], "A13", 28.54, true);
-        TrackFactory.sensor(tracks[0x104], "A15", 96, true);
+        TrackFactory.sensor(tracks[0x104], "A15", 9.6, true);
         //#endregion
 
         //#region Outer loop
@@ -89,7 +89,7 @@ export class TrackA {
         TrackFactory.sensor(tracks[0x11D], "C5", 9.5, false);
         TrackFactory.sensor(tracks[0x114], "E11", 3.88, true);
         TrackFactory.sensor(tracks[0x112], "C15", 18.9, true);
-        TrackFactory.sensor(tracks[0x112], "D11", 18.9, false);
+        TrackFactory.sensor(tracks[0x112], "D11", -18.9, false);
         //#endregion
 
         //#region Inner loop
@@ -115,8 +115,8 @@ export class TrackA {
         TrackFactory.switch(tracks, 14, tracks[0x11A], tracks[0x11C], tracks[0x12C]);
         TrackFactory.switch(tracks, 15, tracks[0x11B], tracks[0x11D], tracks[0x12D]);
         // Sensor
-        TrackFactory.sensor(tracks[0x126], "D7", 21.52, false);
-        TrackFactory.sensor(tracks[0x128], "D9", -21.52, true);
+        TrackFactory.sensor(tracks[0x126], "D5", 21.52, false);
+        TrackFactory.sensor(tracks[0x128], "E9", -21.52, true);
         TrackFactory.sensor(tracks[0x121], "E5", 3.88, false);
         TrackFactory.sensor(tracks[0x123], "E13", 3.88, true);
         TrackFactory.sensor(tracks[0x120], "B5", 18.9, true);
@@ -147,8 +147,8 @@ export class TrackA {
         tracks[0x9A] = new Switch(0x9A, middlePoint);
         tracks[0x9B] = new Switch(0x9B, middlePoint);
         tracks[0x9C] = new Switch(0x9C, middlePoint);
-        (tracks[0x99] as Switch).connect(tracks[0x9A], tracks[0x13A], tracks[0x134]);
-        (tracks[0x9B] as Switch).connect(tracks[0x9C], tracks[0x13B], tracks[0x133]);
+        (tracks[0x99] as Switch).connect(tracks[0x9A], tracks[0x13B], tracks[0x134]);
+        (tracks[0x9B] as Switch).connect(tracks[0x9C], tracks[0x13A], tracks[0x133]);
         (tracks[0x9A] as Switch).connect(tracks[0x9C], tracks[0x99], tracks[0x135]);
         (tracks[0x9C] as Switch).connect(tracks[0x9A], tracks[0x9B], tracks[0x132]);
         // Sensor
@@ -173,8 +173,8 @@ export class TrackA {
         TrackFactory.switch(tracks, 5, tracks[0x141], tracks[0x142], tracks[0x145]);
         TrackFactory.switch(tracks, 17, tracks[0x114], tracks[0x112], tracks[0x145]);
         // Sensors
-        TrackFactory.sensor(tracks[0x142], "C3", 200, true);
-        TrackFactory.sensor(tracks[0x140], "C7", -190, true);
+        TrackFactory.sensor(tracks[0x142], "C3", 20, true);
+        TrackFactory.sensor(tracks[0x140], "C7", -19, true);
         //#endregion
 
         //#region Bottom left
@@ -199,7 +199,7 @@ export class TrackA {
         TrackFactory.switch(tracks, 2, tracks[0x151], tracks[0x156], tracks[0x153]);
         TrackFactory.switch(tracks, 3, tracks[0x140], tracks[0x150], tracks[0x151]);
         // Sensors
-        TrackFactory.sensor(tracks[0x150], "A11", 9.42, true);
+        TrackFactory.sensor(tracks[0x158], "A11", 9.42, true);
         TrackFactory.sensor(tracks[0x154], "A9", -19, false);
         TrackFactory.sensor(tracks[0x154], "B7", 9.42, true);
         TrackFactory.sensor(tracks[0x152], "A7", -19, false);
@@ -212,5 +212,7 @@ export class TrackA {
     private static createTrains(trains: Train[], tracks: Track[]) {
         TrainFactory.train(trains, 24);
         trains[24].putOnTrack(tracks[0x100], true);
+        TrainFactory.train(trains, 58);
+        trains[58].putOnTrack(tracks[0x150], true);
     }
 }

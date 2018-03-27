@@ -1,5 +1,6 @@
 import { Track, IPositionOnTrack, ITrackConnection } from './track';
-import { IPoint2D, distance2D } from '../util/point2d';
+import { IPoint2D, distance2D, normalize2D, dot2D, rotate2D, direction2D } from '../util/point2d';
+import { ISwitch } from '../util/tick_payload';
 
 export enum SwitchDirection {
     Straight,
@@ -121,5 +122,79 @@ export class Switch extends Track {
         this.changeDirection(SwitchDirection.Curve);
         Track.connectManually(this, false, curve, curveHead);
         this.changeDirection(originalDirection);
+    }
+
+    public getPositionMetadata(): ISwitch {
+        let distance = this.previousTrack.head ? 0 : this.previousTrack.track.getLength();
+        let direction = this.previousTrack.track.getDirection(distance);
+        if (isFinite(direction)) {
+            if (this.previousTrack.head) {
+                direction += Math.PI;
+                if (direction > Math.PI) {
+                    direction -= Math.PI * 2;
+                }
+            }
+        } else {
+            distance = this.nextTrack.head ? 0 : this.nextTrack.track.getLength();
+            direction = this.nextTrack.track.getDirection(distance);
+            if (isFinite(direction)) {
+                if (!this.nextTrack.head) {
+                    direction += Math.PI;
+                    if (direction > Math.PI) {
+                        direction -= Math.PI * 2;
+                    }
+                }
+            } else {
+                distance = this.offlineTrack.head ? 0 : this.offlineTrack.track.getLength();
+                direction = this.offlineTrack.track.getDirection(distance);
+                if (isFinite(direction)) {
+                    if (!this.offlineTrack.head) {
+                        direction += Math.PI;
+                        if (direction > Math.PI) {
+                            direction -= Math.PI * 2;
+                        }
+                    }
+                } else {
+                    throw new Error('Cannot get switch direction.');
+                }
+            }
+        }
+
+        const directionVector = rotate2D({ x: 1, y: 0 }, direction);
+
+        const onlineDirection = normalize2D(this.getTrackDirection(this.nextTrack));
+        const onlineDot = dot2D(directionVector, onlineDirection);
+
+        const offlineDirection = normalize2D(this.getTrackDirection(this.offlineTrack));
+        const offlineDot = dot2D(directionVector, offlineDirection);
+
+        let dominantDiretion: IPoint2D;
+        if (!isFinite(onlineDot)) {
+            dominantDiretion = offlineDirection;
+        } else if (!isFinite(offlineDot)) {
+            dominantDiretion = onlineDirection;
+        } else {
+            dominantDiretion = onlineDot < offlineDot ? onlineDirection : offlineDirection;
+        }
+        const turningRight = direction2D(rotate2D(dominantDiretion, -direction)) > 0;
+
+        return {
+            name: this.id.toString(10),
+            position: this.getStartPoint(),
+            rotation: direction,
+            turningRight: turningRight
+        };
+    }
+
+    private getTrackDirection(connection: ITrackConnection): IPoint2D {
+        const coefficient = connection.head ? 1 : -1;
+        return normalize2D({
+            x: coefficient * (connection.track.getEndPoint().x - connection.track.getStartPoint().x),
+            y: coefficient * (connection.track.getEndPoint().y - connection.track.getStartPoint().y)
+        });
+    }
+
+    public getDirection(distance: number): number {
+        return NaN;
     }
 }

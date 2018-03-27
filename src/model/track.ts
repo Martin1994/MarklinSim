@@ -1,5 +1,6 @@
 import { IPoint2D, distance2D } from '../util/point2d';
 import { Sensor } from './sensor';
+import { ISensor } from '../util/tick_payload';
 
 /**
  * The track model. It records which tracks to connect with,
@@ -58,6 +59,31 @@ export abstract class Track {
 
     public getSensors(): Sensor[] {
         return this.sensors;
+    }
+
+    /**
+     * Return the direction in radian.
+     * @param distance Distance to the starting point.
+     * @return Rotation from (1, 0) in radian ranged in (-PI, PI].
+     */
+    public abstract getDirection(distance: number): number;
+
+    public getSensorMetadata(): ISensor[] {
+        const sensors: ISensor[] = [];
+
+        for (const sensor of this.sensors) {
+            let rotation = (sensor.forward ? 0 : Math.PI) + this.getDirection(sensor.distanceToHead);
+            if (rotation > Math.PI) {
+                rotation -= Math.PI * 2;
+            }
+            sensors.push({
+                name: sensor.name,
+                position: this.getGlobalPosition(sensor.distanceToHead),
+                rotation: rotation
+            });
+        }
+
+        return sensors;
     }
 
     public getSensorsAt(distance: number, forward: boolean): Sensor[] {
