@@ -171,7 +171,7 @@ export class TrackA {
         TrackFactory.switch(tracks, 18, tracks[0x141], tracks[0x140], tracks[0x144]);
         TrackFactory.switch(tracks, 6, tracks[0x11D], tracks[0x112], tracks[0x144]);
         TrackFactory.switch(tracks, 5, tracks[0x141], tracks[0x142], tracks[0x145]);
-        TrackFactory.switch(tracks, 17, tracks[0x114], tracks[0x112], tracks[0x145]);
+        TrackFactory.switch(tracks, 7, tracks[0x114], tracks[0x112], tracks[0x145]);
         // Sensors
         TrackFactory.sensor(tracks[0x142], "C3", 20, true);
         TrackFactory.sensor(tracks[0x140], "C7", -19, true);
