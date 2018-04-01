@@ -36,7 +36,9 @@ export class MarklinIO {
     }
 
     public reportSensor(sensors: boolean[]) {
-        this.client.write(new Buffer(this.decoder.encodeSensor(sensors)));
+        if (this.client) {
+            this.client.write(new Buffer(this.decoder.encodeSensor(sensors)));
+        }
     }
 
     public listenTCP(port: number) {
