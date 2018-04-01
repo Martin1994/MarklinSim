@@ -84,8 +84,8 @@ export class TrackA {
         TrackFactory.sensor(tracks[0x110], "E7", -9.42, true);
         TrackFactory.sensor(tracks[0x116], "D7", 21.52, true);
         TrackFactory.sensor(tracks[0x118], "D9", -21.52, true);
-        TrackFactory.sensor(tracks[0x11A], "A3", 9.5, false);
-        TrackFactory.sensor(tracks[0x11B], "B15", 9.5, true);
+        TrackFactory.sensor(tracks[0x11A], "A3", 9.5, true);
+        TrackFactory.sensor(tracks[0x11B], "B15", 9.5, false);
         TrackFactory.sensor(tracks[0x11D], "C5", 9.5, false);
         TrackFactory.sensor(tracks[0x114], "E11", 3.88, true);
         TrackFactory.sensor(tracks[0x112], "C15", 18.9, true);
@@ -116,7 +116,7 @@ export class TrackA {
         TrackFactory.switch(tracks, 15, tracks[0x11B], tracks[0x11D], tracks[0x12D]);
         // Sensor
         TrackFactory.sensor(tracks[0x126], "D5", 21.52, false);
-        TrackFactory.sensor(tracks[0x128], "E9", -21.52, true);
+        TrackFactory.sensor(tracks[0x128], "E9", -21.52, false);
         TrackFactory.sensor(tracks[0x121], "E5", 3.88, false);
         TrackFactory.sensor(tracks[0x123], "E13", 3.88, true);
         TrackFactory.sensor(tracks[0x120], "B5", 18.9, true);
@@ -124,7 +124,7 @@ export class TrackA {
         TrackFactory.sensor(tracks[0x122], "B1", 18.9, true);
         TrackFactory.sensor(tracks[0x122], "D13", -18.9, false);
         TrackFactory.sensor(tracks[0x12C], "C11", 9.5, false);
-        TrackFactory.sensor(tracks[0x12D], "C9", 9.5, false);
+        TrackFactory.sensor(tracks[0x12D], "C9", 9.5, true);
         //#endregion
 
         //#region Cross
