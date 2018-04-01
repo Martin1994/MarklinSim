@@ -145,6 +145,7 @@ export class MarklinController {
             if (!delta || swytch.directionDirty) {
                 let tracks: ITrackPortion[];
 
+                tracks = null;
                 const online = swytch.getOnlineTrack();
                 if (online.track instanceof StraightTrack) {
                     tracks = payload.onlineSwitchStraightTracks;
@@ -158,6 +159,7 @@ export class MarklinController {
                     });
                 }
 
+                tracks = null;
                 const offline = swytch.getOfflineTrack();
                 if (offline.track instanceof StraightTrack) {
                     tracks = payload.offlineSwitchStraightTracks;
