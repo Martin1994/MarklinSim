@@ -8,12 +8,12 @@ If you are taking CS 452, this project should only be used as a reference when t
 
 # Demo
 
-![Screenshop of MärklinSim](doc/TrackA.png?raw=true)
+![Screenshot of MärklinSim](doc/TrackA.png?raw=true)
 
 [![Video demo of MärklinSim](https://img.youtube.com/vi/IRfwhlV-NT4/0.jpg)](https://www.youtube.com/watch?v=IRfwhlV-NT4)
 
 # Get started
-MärklinSim is based on Electron, therefore it is cross-platform natually.
+MärklinSim is based on Electron, therefore it is cross-platform naturally.
 
 You need to install Node.js before using MärklinSim. Node v8.x.x is recommended.
 
