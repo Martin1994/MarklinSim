@@ -78,7 +78,7 @@ export class TrackA {
         Track.connect(tracks[0x117], tracks[0x116]);
         Track.connect(tracks[0x114], tracks[0x118]);
         Track.connect(tracks[0x119], tracks[0x118]);
-        TrackFactory.switch(tracks, 11, tracks[0x110], tracks[0x11C], tracks[0x106]);
+        TrackFactory.switch(tracks, 11, tracks[0x110], tracks[0x106], tracks[0x11C]);
         // Sensor
         TrackFactory.sensor(tracks[0x110], "C13", 9.42, true);
         TrackFactory.sensor(tracks[0x110], "E7", -9.42, true);
