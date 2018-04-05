@@ -94,10 +94,12 @@ export class Train {
             const passiveWheel = this.backWheel;
 
             const target = wheel.track.move(wheel.distance, displacement, wheel.forward);
-            wheel.track = target.track;
-            wheel.distance = target.distance;
-            wheel.forward = target.forward;
-            wheel.globalPosition = target.globalPosition;
+            if (target) {
+                wheel.track = target.track;
+                wheel.distance = target.distance;
+                wheel.forward = target.forward;
+                wheel.globalPosition = target.globalPosition;
+            }
 
             const passiveTarget = passiveWheel.track.movePassive(
                 passiveWheel.distance, wheel.globalPosition, this.length - 2 * this.wheelOffset);
