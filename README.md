@@ -17,9 +17,11 @@ MärklinSim is based on Electron, therefore it is cross-platform naturally.
 
 You need to install Node.js before using MärklinSim. Node v8.x.x is recommended.
 
-Run `npm install --only=dev` at the root directory of this project once you have a Node environment.
+Run `npm install` at the root directory of this project once you have a Node environment.
 
-Run `./node_modules/.bin/tsc` at the root directory of this project to compile TypeScript.
+Run `npm run compile-main` at the root directory of this project to compile TypeScript source files.
+
+Run `npm run copy-resources` at the root directory of this project to copy resource files.
 
 Run `./node_modules/.bin/electron ./dist/main.js` to start the program. By default it will listen TCP port 3018.
 
