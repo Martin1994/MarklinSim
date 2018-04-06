@@ -10,6 +10,8 @@ If you are taking CS 452, this project should only be used as a reference when t
 
 ![Screenshot of MärklinSim](doc/TrackA.png?raw=true)
 
+Click the following image to watch the video.
+
 [![Video demo of MärklinSim](https://img.youtube.com/vi/IRfwhlV-NT4/0.jpg)](https://www.youtube.com/watch?v=IRfwhlV-NT4)
 
 # Get started
