@@ -103,10 +103,13 @@ export class Train {
 
             const passiveTarget = passiveWheel.track.movePassive(
                 passiveWheel.distance, wheel.globalPosition, this.length - 2 * this.wheelOffset);
-            passiveWheel.track = passiveTarget.track;
-            passiveWheel.distance = passiveTarget.distance;
-            passiveWheel.forward = passiveTarget.forward;
-            passiveWheel.globalPosition = passiveTarget.globalPosition;
+            if (passiveTarget) {
+                passiveWheel.track = passiveTarget.track;
+                passiveWheel.distance = passiveTarget.distance;
+                passiveWheel.forward = passiveTarget.forward;
+                passiveWheel.globalPosition = passiveTarget.globalPosition;
+            }
+
             this.positionDirty = true;
         }
     }
